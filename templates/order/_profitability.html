@@ -1,0 +1,7 @@
+{% if profitability > 0 %}
+Ótima <span class="fa fa-angle-double-up fa-fw text-success" title="Rentabilidade ótima"></span>
+{% elif profitability == 0 %}
+Boa <span class="fa fa-angle-up fa-fw text-warning" title="Rentabilidade boa"></span>
+{% else %}
+Ruim <span class="fa fa-angle-down fa-fw text-danger" title="Rentabilidade ruim"></span>
+{% endif %}

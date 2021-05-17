@@ -1,0 +1,12 @@
+__pycache__/
+staticfiles/
+env/
+log/
+db/
+*.pyc
+*.pot
+*.log
+*.ini
+*.env
+*.swp
+.vscode

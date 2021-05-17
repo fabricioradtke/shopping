@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load money %}
+
+{% block title %}Shop Wars - Pedidos{% endblock %}
+
+{% block content %}
+<div class="my-4 clearfix">    
+    <a href="{% url 'order-create' %}" type="button" class="btn btn-primary btn-sm float-end">
+        <span class="fa fa-plus fa-fw"></span> Adicionar
+    </a>
+
+    <h3 class="m-0">Pedidos</h3>
+</div>
+
+{% include 'message.html' %}
+
+{% if orders %}
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Data de criação</th>
+                    <th>Itens</th>
+                    <th>Quantidade</th>
+                    <th>Rentabilidade</th>
+                    <th class="text-end">Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+
+                {% for item in order.items.all %}
+                <tr>
+                    {% if forloop.first %}
+                    <td class="border-0">
+                        <strong>
+                            <a href="{% url 'order-detail' order.id %}">{{ order.id }}</a>
+                        </strong>
+                    </td>
+                    <td class="border-0">{{ order.client.name }}</td>
+                    <td class="border-0">{{ order.created_at }}</td>
+                    {% else %}
+                    <td colspan="3"></td>
+                    {% endif %}
+
+                    <td><strong>{{ item.product.name }}</strong></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{% include 'order/_profitability.html' with profitability=item.profitability %}</td>
+                    <td class="text-end">
+                        <strong>R$ {{ item.price|money }}</strong>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>
+                        <strong>
+                            <a href="{% url 'order-detail' order.id %}">{{ order.id }}</a>
+                        </strong>
+                    </td>
+                    <td>{{ order.client.name }}</td>
+                    <td>{{ order.created_at }}</td>
+                    <td colspan="4"></td>
+                </tr>
+                {% endfor %}
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card-body">
+    Não há pedidos.
+</div>
+{% endif %}
+{% endblock %}

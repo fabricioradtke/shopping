@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load money %}
+{% load forms %}
+
+{% block title %}Shop Wars - Pedido #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="my-4 clearfix">    
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'order-index' %}">Pedidos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Pedido #{{ order.id }}</li>
+        </ol>
+    </nav>
+
+    <h3 class="m-0">Pedido #{{ order.id }}</h3>
+</div>
+
+{% include 'message.html' %}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <button type="button" class="btn btn-secondary btn-sm float-end" title="Alterar cliente" 
+                data-bs-toggle="collapse" data-bs-target="#client-update" aria-expanded="false" 
+                aria-controls="client-update">
+            <span class="fa fa-pen fa-fw"></span>
+        </button>
+
+        Cliente:
+        <div class="fw-bold">{{ order.client.name }}</div>
+
+        <div {% if not order_form.errors %}class="collapse"{% endif %} id="client-update">
+            <br>
+            <h5 class="card-title">Selecionar cliente</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <form method="post" novalidate>{% csrf_token %}
+                        <input type="hidden" name="order-update">
+
+                        {% include 'common/form.html' with form=order_form %}
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                Confirmar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Selecionar itens</h5>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form method="post" novalidate>{% csrf_token %}
+                    <input type="hidden" name="item-create">
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            {% include 'common/form_field.html' with field=item_form.product_id %}
+                            <div class="text-muted">Preço: R$ <span id="product-price">0,00</span></div>
+                        </div>
+                        <div class="col-md-4">
+                            {% include 'common/form_field.html' with field=item_form.quantity %}
+                        </div>
+                        <div class="col-md-8">
+                            {% include 'common/form_field.html' with field=item_form.price %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Rentabilidade</label>
+                        <div class="profitability text-muted"></div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary btn-sm" title="Adicionar item">
+                            Adicionar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-7 ms-auto">
+                {% if items %}
+                <table class="table mb-5">
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td width="1">
+                                <form method="post" novalidate>{% csrf_token %}
+                                    <input type="hidden" name="item-delete">
+                                    <input type="hidden" name="item" value="{{ item.id }}">
+
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="Remover item">
+                                        <span class="fa fa-times fa-fw"></span>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <strong>{{ item.product.name }}</strong>
+                                <div class="text-muted">Quantidade: {{ item.quantity }}</div>
+                                <div class="text-muted">
+                                    Rentabilidade:
+                                    {% include 'order/_profitability.html' with profitability=item.profitability %}
+                                </div>
+                            </td>
+                            <td class="text-end"><strong>R$ {{ item.price|money }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end">
+                                Total ({{ order.quantity_sum }} ite{{ order.quantity_sum|pluralize:'m,ns' }}):
+                                <strong>R$ {{ order.total|money }}</strong>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                {% else %}
+                Nenhum item selecionado.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<script src="{% static 'js/simple-mask-money.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+{% endblock %}

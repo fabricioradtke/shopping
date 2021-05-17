@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load money %}
+
+{% block title %}Shop Wars - Novo pedido{% endblock %}
+
+{% block content %}
+<div class="my-4 clearfix">    
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'order-index' %}">Pedidos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Novo pedido</li>
+        </ol>
+    </nav>
+
+    <h3 class="m-0">Novo pedido</h3>
+</div>
+
+{% include 'message.html' %}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Selecionar cliente</h5>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form method="post" novalidate>{% csrf_token %}
+                    {% include 'common/form.html' with form=form %}
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            Avançar <span class="fa fa-angle-right fa-fw"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

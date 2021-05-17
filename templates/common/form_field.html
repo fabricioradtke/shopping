@@ -1,0 +1,18 @@
+{% load forms %}
+
+<div class="mb-3 {{ field.css_classes }}">
+	{% if field|is_checkbox %}
+		{% include 'common/fields/checkbox.html' %}
+	{% elif field|is_radio %}
+		{% include 'common/fields/radio.html' %}
+	{% else %}
+		<label for="{{ field.id_for_label }}" class="form-label{% if field.field.required %} {{ field.form.required_css_class }}{% endif %}">
+			{{ field.label }}
+			{% include 'common/field_required.html' %}
+		</label>
+		{{ field|bootstrap_class }}
+		{% include 'common/field_help.html' %}
+	{% endif %}
+
+	{% include 'common/field_errors.html' %}
+</div>

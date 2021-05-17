@@ -1,0 +1,21 @@
+{% load forms %}
+
+{% if field.auto_id %}
+	{% if not is_horizontal %}
+		<label{% if field.field.required %} class="{{ form.required_css_class }}{% endif %}">
+			<span class="field-label">{{ field.label }}</span>
+			{% include 'common/field_required.html' %}
+			{% include 'common/field_help.html' %}
+		</label>
+	{% endif %}
+{% endif %}
+
+{% for choice in field|bootstrap_class %}
+	<div class="form-check">
+		{{ choice.tag }}
+
+		<label class="form-check-label" for="{{ choice.id_for_label }}">
+			{{ choice.choice_label }}
+		</label>
+	</div>
+{% endfor %}
